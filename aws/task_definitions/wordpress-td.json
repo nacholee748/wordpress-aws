@@ -1,0 +1,51 @@
+[
+  {
+    "image": "wordpress:php8.3-fpm-alpine",
+    "cpu": 512,
+    "memory": 1024,
+    "name": "wordpress",
+    "networkMode": "awsvpc",
+    "portMappings": [
+      {
+        "containerPort": 80,
+        "hostPort": 80
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "awslogs-wordpress",
+        "awslogs-region": "us-east-1",
+        "awslogs-stream-prefix": "wp"
+      }
+    },
+    "essential": true,
+    "volumes": [
+      {
+          "name": "efs-fargate",
+          "efsVolumeConfiguration": {
+              "fileSystemId": "${efs-id}",
+              "rootDirectory": "/var/www/html"
+          }
+      }
+  ],
+    "environment": [
+      {
+        "name": "WORDPRESS_DB_HOST",
+        "value": "${db_host}"
+      },
+      {
+        "name": "WORDPRESS_DB_USER",
+        "value": "${db_user}"
+      },
+      {
+        "name": "WORDPRESS_DB_PASSWORD",
+        "value": "${db_pass}"
+      },
+      {
+        "name": "WORDPRESS_DB_NAME",
+        "value": "${db_name}"
+      }
+    ]
+  }
+]
